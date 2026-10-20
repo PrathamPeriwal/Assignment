@@ -1,0 +1,181 @@
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/fraunces/opsz-italic.css';
+@import '@fontsource-variable/hanken-grotesk/index.css';
+@import '@fontsource-variable/jetbrains-mono/index.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-*: initial;
+  --color-paper: #f2ecdf;
+  --color-paper-2: #e9e1d0;
+  --color-ink: #17150f;
+  --color-ink-soft: #5c574b;
+  --color-vermilion: #e2452b;
+  --color-moss: #2e4b3c;
+  --color-butter: #f3d56b;
+
+  --font-*: initial;
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Hanken Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', monospace;
+
+  --radius-*: initial;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  --shadow-*: initial;
+  --shadow-hard-sm: 2px 2px 0 var(--color-ink);
+  --shadow-hard: 4px 4px 0 var(--color-ink);
+  --shadow-hard-lg: 6px 6px 0 var(--color-ink);
+  --shadow-press: 0 0 0 var(--color-ink);
+
+  --drop-shadow-*: initial;
+  --drop-shadow-hard: 4px 4px 0 var(--color-ink);
+  --drop-shadow-hard-lg: 6px 6px 0 var(--color-ink);
+  --drop-shadow-press: 0 0 0 var(--color-ink);
+
+  --ease-spring: linear(0, 0.22 6%, 0.55 14%, 0.82 24%, 0.98 36%, 1.04 48%, 1.02 60%, 1.005 75%, 1);
+
+  --text-display: clamp(3.25rem, 11vw, 7rem);
+  --text-display--line-height: 0.9;
+  --text-display--letter-spacing: -0.04em;
+  --text-h1: clamp(2.5rem, 7vw, 4.5rem);
+  --text-h1--line-height: 0.95;
+  --text-h1--letter-spacing: -0.035em;
+  --text-h2: clamp(1.75rem, 4vw, 2.75rem);
+  --text-h2--line-height: 1;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.1;
+  --text-h3--letter-spacing: -0.02em;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.45;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+
+  --animate-ink-pulse: ink-pulse 1.4s ease-in-out infinite;
+  --animate-tear: tear 0.5s var(--ease-spring) both;
+
+  @keyframes ink-pulse {
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  @keyframes tear {
+    from {
+      translate: 0 -0.5rem;
+      rotate: -3deg;
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-ink);
+  }
+
+  ::selection {
+    background: var(--color-butter);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-vermilion);
+    outline-offset: 3px;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@utility rule {
+  border-width: 1.5px;
+}
+
+@utility rule-t {
+  border-top-width: 1.5px;
+}
+
+@utility rule-b {
+  border-bottom-width: 1.5px;
+}
+
+@utility rule-l {
+  border-left-width: 1.5px;
+}
+
+@utility rule-r {
+  border-right-width: 1.5px;
+}
+
+@utility notched-outer {
+  --notch: 9px;
+  --tear: 3.5rem;
+  mask:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--tear) - 1.5px), #0000 97%, #000)
+      left / 51% 100% no-repeat,
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--tear) - 1.5px), #0000 97%, #000)
+      right / 51% 100% no-repeat;
+}
+
+@utility notched-inner {
+  --r: calc(var(--notch) + 1.5px);
+  mask:
+    radial-gradient(circle var(--r) at -1.5px calc(100% - var(--tear)), #0000 97%, #000) left / 51%
+      100% no-repeat,
+    radial-gradient(circle var(--r) at calc(100% + 1.5px) calc(100% - var(--tear)), #0000 97%, #000)
+      right / 51% 100% no-repeat;
+}

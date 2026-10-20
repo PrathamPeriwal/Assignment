@@ -1,0 +1,28 @@
+---
+description: Design direction and code conventions for the Office Hours frontend
+globs: frontend/**
+alwaysApply: false
+---
+
+# Frontend conventions
+
+Vite + React 19 + TS strict, React Router 7 (`react-router`), TanStack Query, react-hook-form + zod, `motion/react`, date-fns, Tailwind v4. No component library; Radix Dialog only, styled by us. Alias `@/` = `src/`.
+
+## Design: printed timetable, library card, ticket stub
+- Tokens live in `@theme` in `src/styles/index.css` (no tailwind.config). Use only: `paper` #F2ECDF bg, `paper-2` #E9E1D0, `ink` #17150F, `ink-soft` #5C574B, `vermilion` #E2452B accent, `moss` #2E4B3C, `butter` #F3D56B (rare highlight). Light only.
+- Type: `font-display` Fraunces (big, tight tracking, italic for emphasis words), `font-body` Hanken Grotesk, `font-mono` JetBrains Mono for times, IDs and `mono-label` (small, uppercase, wide tracking). Scale: `text-display`, `text-h1`..`text-h3`, `text-lead`.
+- Shape: radius 2-4px (`rounded-sm`), 1.5px ink borders (`rule`, `rule-t/b/l/r`), hard shadows `shadow-hard` that press in on `:active`. Springy easing is `ease-spring`.
+- Layout: asymmetric, left-aligned, visible rules, margin labels via `<SectionLabel no={2}>`. A session is always a `<Ticket>`.
+- Never: blurred shadows, gradients, glassmorphism, purple or blue, rounded-2xl card grids, three equal feature cards, centered hero with two buttons, icon-in-circle bullets, emoji, icon libraries (hand-made inline SVG only).
+- Vermilion on paper is under 4.5:1. Never use it for small body text. Use ink text with a vermilion bar or fill instead.
+- Copy: plain, specific, human. Banned words: unlock, elevate, seamless, supercharge, revolutionize, empower.
+- Motion: springs. Everything honors prefers-reduced-motion (global CSS plus `MotionConfig reducedMotion="user"`).
+
+## Code
+- Feature folders in `src/features/<name>` (`api.ts`, `hooks.ts`, components). Shared UI in `components/ui`, shell in `components/layout`, plumbing in `lib` and `hooks`.
+- Data flow: component -> feature hook -> `api.ts` -> `lib/api-client`. Query keys only from `lib/query-keys`. Mutations invalidate affected keys.
+- Errors are `ApiError` (code, status, message, details). 409 shows inline in forms.
+- Keep components small and split by job. One component per file, helpers in sibling `.ts` files so react-refresh stays happy.
+- No same-property Tailwind overrides via `className` (no tailwind-merge). Wrap in an element instead.
+- No comment narration, no JSDoc on everything, no emojis, no dead code, no unused deps, no `console.log`.
+- Before finishing: `npm run typecheck`, `npm run lint`, `npm run build` in `frontend/`.

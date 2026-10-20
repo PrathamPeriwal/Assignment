@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Project conventions
 
-Backend in `backend/` (Node LTS, TypeScript strict, Express 5, MongoDB, Mongoose). `frontend/` comes later.
+Backend in `backend/` (Node LTS, TypeScript strict, Express 5, MongoDB, Mongoose). Frontend lives in `frontend/` and follows `frontend.mdc`.
 
 ## Architecture
 - Flow: routes -> validate middleware -> controller -> service -> model.
