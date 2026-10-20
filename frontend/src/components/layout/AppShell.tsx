@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useState, type ReactNode } from 'react';
 import { ScrollRestoration, useLocation, useOutlet } from 'react-router';
+import { Footer } from './Footer';
 import { Header } from './Header';
 
 // Keeps the outgoing page rendered while it animates out
@@ -12,7 +13,6 @@ function Frozen({ children }: { children: ReactNode }) {
 export function AppShell() {
   const { pathname } = useLocation();
   const outlet = useOutlet();
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-6xl flex-col md:rule-l md:rule-r">
@@ -23,7 +23,7 @@ export function AppShell() {
         Skip to content
       </a>
       <Header />
-      <main id="main" className="flex-1 px-4 py-8 sm:px-8 md:py-12">
+      <main id="main" className="flex-1 overflow-x-clip px-4 py-8 sm:px-8 md:py-12">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={pathname}
@@ -36,10 +36,7 @@ export function AppShell() {
           </motion.div>
         </AnimatePresence>
       </main>
-      <footer className="rule-t mono-label flex flex-wrap justify-between gap-2 px-4 py-4 text-ink-soft sm:px-8">
-        <span>Office Hours</span>
-        <span>Times shown in {timezone}</span>
-      </footer>
+      <Footer />
       <ScrollRestoration />
     </div>
   );

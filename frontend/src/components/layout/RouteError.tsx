@@ -14,7 +14,7 @@ export function RouteError() {
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-8">
       <SectionLabel no={0}>Misprint</SectionLabel>
       <h1 className="font-display mt-6 text-h1">
-        This page <em>jammed</em> in the press.
+        This page <em className="text-vermilion">jammed</em> in the press.
       </h1>
       <p className="mono-label mt-4 text-ink-soft">{detail}</p>
       <Link to="/" className={buttonStyles('primary', 'md', 'mt-8')}>

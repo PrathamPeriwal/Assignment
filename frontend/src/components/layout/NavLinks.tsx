@@ -1,12 +1,6 @@
 import { NavLink } from 'react-router';
 import { cn } from '@/lib/cn';
-
-const links = [
-  { to: '/', label: 'Home' },
-  { to: '/sessions', label: 'Browse' },
-  { to: '/teachers', label: 'Teachers' },
-  { to: '/me', label: 'My sessions' },
-];
+import { navLinks } from './links';
 
 interface NavLinksProps {
   stacked?: boolean;
@@ -16,7 +10,7 @@ interface NavLinksProps {
 export function NavLinks({ stacked, onNavigate }: NavLinksProps) {
   return (
     <ul className={cn('flex', stacked ? 'flex-col' : 'items-center gap-1')}>
-      {links.map((link) => (
+      {navLinks.map((link) => (
         <li key={link.to} className={cn(stacked && 'rule-b last:border-b-0')}>
           <NavLink
             to={link.to}

@@ -37,7 +37,7 @@ export function SessionsPage() {
         }
       />
 
-      <div className="mt-8 flex flex-col gap-5">
+      <div className="mt-10 flex flex-col gap-5">
         <WeekStrip today={today} selected={day} onSelect={setDay} />
         <BrowseControls
           today={today}
