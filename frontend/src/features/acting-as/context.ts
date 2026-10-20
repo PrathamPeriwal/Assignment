@@ -7,6 +7,7 @@ export interface ActingAsValue {
   chooseUser: (user: Pick<User, '_id' | 'fullName'>) => void;
   clearActor: () => void;
   openPicker: () => void;
+  pickThen: (next: () => void) => void;
 }
 
 export const ActingAsContext = createContext<ActingAsValue | null>(null);

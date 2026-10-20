@@ -1,5 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { startOfDay } from 'date-fns';
+import {
+  queryOptions,
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { addDays, startOfDay } from 'date-fns';
+import { isConflict } from '@/lib/api-error';
 import { queryKeys } from '@/lib/query-keys';
 import {
   fetchAvailableSessions,
@@ -8,15 +15,32 @@ import {
   postBooking,
   postSession,
 } from './api';
+import { WEEK_LENGTH } from './days';
 
-export function useAvailableSessions(day: Date) {
+function availableOptions(day: Date) {
   const dateTimestamp = startOfDay(day).getTime();
   // JS reports minutes behind UTC, the API wants minutes ahead
   const tzOffsetMinutes = -new Date(dateTimestamp).getTimezoneOffset();
-  return useQuery({
+  return queryOptions({
     queryKey: queryKeys.sessions.available(dateTimestamp, tzOffsetMinutes),
     queryFn: ({ signal }) => fetchAvailableSessions(dateTimestamp, tzOffsetMinutes, signal),
   });
+}
+
+export function useAvailableSessions(day: Date) {
+  return useQuery(availableOptions(day));
+}
+
+export function useNextDayWithSessions(from: Date, enabled: boolean) {
+  const days = Array.from({ length: WEEK_LENGTH }, (_, index) => addDays(from, index + 1));
+  const results = useQueries({
+    queries: days.map((day) => ({ ...availableOptions(day), enabled })),
+  });
+
+  const foundAt = results.findIndex((result) => (result.data?.length ?? 0) > 0);
+  const day = foundAt === -1 ? undefined : days[foundAt];
+  const pending = day === undefined && enabled && results.some((result) => result.isPending);
+  return { day, pending };
 }
 
 export function useUserSessions(userId: string | null) {
@@ -45,6 +69,10 @@ export function useBookSession() {
         queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.users.sessions(userId) }),
       ]),
+    onError: (error) =>
+      isConflict(error)
+        ? queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all })
+        : undefined,
   });
 }
 
@@ -59,5 +87,9 @@ export function useCompleteSession() {
           ? queryClient.invalidateQueries({ queryKey: queryKeys.users.sessions(session.userId) })
           : undefined,
       ]),
+    onError: (error) =>
+      isConflict(error)
+        ? queryClient.invalidateQueries({ queryKey: queryKeys.users.all })
+        : undefined,
   });
 }
