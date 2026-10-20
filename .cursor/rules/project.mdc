@@ -1,0 +1,28 @@
+---
+description: Conventions for the sessions-booking backend
+alwaysApply: true
+---
+
+# Project conventions
+
+Backend in `backend/` (Node LTS, TypeScript strict, Express 5, MongoDB, Mongoose). `frontend/` comes later.
+
+## Architecture
+- Flow: routes -> validate middleware -> controller -> service -> model.
+- Controllers handle HTTP only and never import Mongoose. Services never touch req/res.
+- Layout under `backend/src/`: config, models, validators, controllers, services, routes, middlewares, utils, constants. `app.ts` builds the app, `server.ts` listens.
+- Routes mount at root (no `/api` prefix). Register `/sessions/available` before `/sessions/:id/*`.
+- Available sessions and a user's sessions use aggregation pipelines.
+- Booking and completing use one atomic `findOneAndUpdate` filtered on current status, then a follow-up lookup to pick 404 vs 409.
+- No generic repository layer, no DI container.
+
+## Errors and responses
+- Success: `{ success: true, data, message? }`. Failure: `{ success: false, error: { code, message, details? } }`.
+- Throw `ApiError` from services. One error middleware maps ZodError (400), CastError/bad ObjectId (400), Mongo 11000 (409), unknown (500, no stack in production).
+- Validate ObjectId params with zod before touching the DB. Env is parsed with zod and fails fast.
+
+## Code style
+- async/await only. No callbacks, no `.then` chains, no `console.log` (use morgan and `utils/logger`).
+- No AI-looking code: no banner comments, no JSDoc on every function, no "Step 1" narration, no emojis.
+- Comment only the why, and only when it is not obvious. Short human names, small functions.
+- No dead code or unused dependencies. Run `npm run typecheck` and `npm run lint` in `backend/` before finishing.
